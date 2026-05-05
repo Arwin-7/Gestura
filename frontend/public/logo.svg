@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 130" width="440" height="130">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6aabf7"/>
+      <stop offset="100%" stop-color="#4a8fd4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="440" height="130" fill="#f0f4fa" rx="14"/>
+
+  <!-- ══ G ICON ══ -->
+  <!--
+    G drawn as a filled shape.
+    Outer radius = 40, inner radius = 27, center = (62, 75)
+    The G opens on the right, and has a horizontal arm pointing inward.
+  -->
+
+  <g transform="translate(62,72)">
+    <!-- Outer arc: full circle minus a gap on the right (from -50° to +50°) -->
+    <!-- We draw the G as a thick stroked arc for clarity -->
+
+    <!-- Outer ring path: starts at top-right gap, goes counter-clockwise around, ends at bottom-right gap -->
+    <!-- Using stroke-based approach with large stroke-width for a bold filled look -->
+
+    <!-- G body: thick arc from ~40° to ~320° (leaving gap on right side) -->
+    <path d="
+      M  30.6  -25.7
+      A  40  40  0  1  0  30.6  25.7
+    "
+      stroke="#4a8fd4" stroke-width="26" fill="none"
+      stroke-linecap="butt"/>
+
+    <!-- Horizontal arm of G (the middle bar going right) -->
+    <!-- From center-right of the G inward -->
+    <rect x="2" y="-13" width="42" height="26" fill="#4a8fd4" rx="3"/>
+
+    <!-- Cover the inner part of the arc to keep it clean -->
+    <path d="
+      M  30.6  -25.7
+      A  40  40  0  1  0  30.6  25.7
+    "
+      stroke="#f0f4fa" stroke-width="10" fill="none"
+      stroke-linecap="butt"/>
+
+    <!-- Redraw clean outer edge -->
+    <path d="
+      M  30.6  -25.7
+      A  40  40  0  1  0  30.6  25.7
+    "
+      stroke="#4a8fd4" stroke-width="1.5" fill="none"
+      stroke-linecap="butt"/>
+
+    <!-- Antenna lines on top of G -->
+    <!-- Left -->
+    <line x1="-14" y1="-38" x2="-22" y2="-56"
+          stroke="#4a8fd4" stroke-width="6" stroke-linecap="round"/>
+    <!-- Center -->
+    <line x1="0" y1="-42" x2="0" y2="-61"
+          stroke="#4a8fd4" stroke-width="6" stroke-linecap="round"/>
+    <!-- Right -->
+    <line x1="14" y1="-38" x2="22" y2="-56"
+          stroke="#4a8fd4" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- ══ WORDMARK ══ -->
+  <text x="140" y="92"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="60"
+        font-weight="400"
+        fill="#2d3748"
+        letter-spacing="-1">Gestura</text>
+</svg>

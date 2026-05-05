@@ -1,0 +1,73 @@
+======================================================
+         GESTURA: DEPLOYMENT GUIDE (Go Live!)
+======================================================
+This guide will walk you through exactly how to take your 
+Gestura web application live to the internet. 
+
+We will deploy in 3 parts:
+1. FIREBASE (Database for the Leaderboard)
+2. RENDER (Hosting for your Python AI Backend)
+3. VERCEL (Hosting for your React Frontend)
+
+------------------------------------------------------
+STEP 1: FIREBASE (Leaderboard Database)
+------------------------------------------------------
+1. Go to https://console.firebase.google.com/
+2. Click "Add project" and name it "Gestura".
+3. Disable Google Analytics (you don't need it for this project) and click "Create Project".
+4. Once created, click the Web icon (</>) on the project overview page to "Add an app".
+5. Name the app "Gestura Web" and click "Register app".
+6. You will see a block of code with a "firebaseConfig" object. Keep this page open!
+7. On the left sidebar, click "Build" -> "Firestore Database".
+8. Click "Create database" and start it in "Test Mode" so you don't run into permission issues immediately.
+9. Choose a location closest to you and click "Enable".
+
+------------------------------------------------------
+STEP 2: RENDER (Python Backend)
+------------------------------------------------------
+1. Go to your GitHub account and create a new repository called "gestura".
+2. Upload the entire Gestura project folder to this GitHub repository.
+3. Go to https://render.com/ and sign up/log in.
+4. Click "New" -> "Web Service".
+5. Connect your GitHub account and select your "gestura" repository.
+6. Fill out the configuration:
+   - Name: gestura-backend
+   - Region: Select whatever is closest to you.
+   - Root Directory: type exactly `backend`
+   - Environment: Python 3
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn --worker-class eventlet -w 1 wsgi:app`
+   - Instance Type: Free
+7. Click "Create Web Service".
+8. Render will take a few minutes to build. Once done, you will see a URL at the top left (e.g., https://gestura-backend.onrender.com).
+9. Copy this URL! You need it for Step 3.
+
+------------------------------------------------------
+STEP 3: VERCEL (React Frontend)
+------------------------------------------------------
+1. Go to https://vercel.com/ and sign up/log in.
+2. Click "Add New..." -> "Project".
+3. Import the same "gestura" GitHub repository you used in Step 2.
+4. Vercel will ask you to configure the project.
+5. In the "Framework Preset" dropdown, make sure it says "Vite".
+6. In the "Root Directory" section, click "Edit" and select `frontend`.
+7. Click to open the "Environment Variables" dropdown. Here is where we connect everything together!
+
+Add the following variables one by one:
+Variable Name                     Variable Value
+-------------------               ----------------
+VITE_BACKEND_URL                  (Paste your Render URL from Step 2. Do NOT put a '/' at the very end of the URL)
+VITE_FIREBASE_API_KEY             (Paste apiKey from your Firebase config in Step 1)
+VITE_FIREBASE_AUTH_DOMAIN         (Paste authDomain from Firebase)
+VITE_FIREBASE_PROJECT_ID          (Paste projectId from Firebase)
+VITE_FIREBASE_STORAGE_BUCKET      (Paste storageBucket from Firebase)
+VITE_FIREBASE_MESSAGING_SENDER_ID (Paste messagingSenderId from Firebase)
+VITE_FIREBASE_APP_ID              (Paste appId from Firebase)
+
+8. Once all 7 variables are added, click "Deploy".
+9. Vercel will build your website. Once complete, it will give you your final, live URL!
+
+======================================================
+Congratulations! Your AI Sign Language Game is live!
+Share the Vercel link with your friends and professors.
+======================================================

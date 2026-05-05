@@ -1,0 +1,34 @@
+I have completed the setup for Step 8: Deployment. I added a wsgi.py file to the backend to make it production-ready and generated an .env.example file in the frontend folder to help you track your environment variables.
+
+Here is the complete guide to taking Gestura live to the world!
+
+1. Database (Firebase Firestore)
+Since you're using Firebase for your leaderboard, it doesn't need to be "deployed" in the traditional sense, but it needs to be configured:
+
+Go to the Firebase Console, create a project, and enable Cloud Firestore.
+Go to "Project Settings", register a Web App, and copy the firebaseConfig keys.
+You will need to paste these keys into your Vercel Environment Variables later.
+2. Backend (Render)
+Render is an excellent platform for hosting Python WebSockets.
+
+Create a GitHub repository and push your backend folder.
+Log into Render and create a new Web Service.
+Connect your GitHub repository.
+Set the environment to Python 3.
+Build Command: pip install -r requirements.txt
+Start Command: gunicorn --worker-class eventlet -w 1 wsgi:app (Note: you may need to add eventlet to your requirements.txt before pushing).
+CORS Handling: Inside our app.py, we already set up CORS(app) and cors_allowed_origins="*". This ensures your Vercel frontend is allowed to talk to your Render backend without security blocks.
+Once deployed, Render will give you a URL like https://gestura-backend.onrender.com. Save this!
+3. Frontend (Vercel)
+Vercel is the easiest and fastest way to host Vite React apps.
+
+Push your frontend folder to a GitHub repository.
+Log into Vercel and "Import Project".
+Vercel will automatically detect that it's a Vite React app.
+Environment Variables: Before hitting deploy, open the "Environment Variables" tab in Vercel.
+Add all of your Firebase keys (e.g., VITE_FIREBASE_API_KEY).
+Add your WebSocket URL Setup: Create a variable named VITE_BACKEND_URL and paste your Render URL (e.g., https://gestura-backend.onrender.com). Do not include a trailing slash.
+Hit Deploy. Vercel will build the React app and give you your live, shareable Gestura link!
+Congratulations! 🎉 We have built the entire architecture and codebase for the Gestura Sign Language game from scratch, strictly following your UI requirements, ML specifications, and tech stack.
+
+Let me know if you'd like to test the game locally, train the ML model right now, or if you have any questions about the code!
