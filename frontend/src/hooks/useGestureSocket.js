@@ -7,55 +7,38 @@ export const useGestureSocket = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Connect to the socket server
         socket.connect();
 
-        const onConnect = () => {
-            setIsConnected(true);
-            setError(null);
+        const onConnect    = () => { setIsConnected(true);  setError(null); };
+        const onDisconnect = () => { setIsConnected(false); setCurrentGesture(null); };
+        const onGesture    = (data) => {
+            setCurrentGesture(data.error ? null : (data.gesture || null));
         };
+        const onError = (data) => setError(data.message);
 
-        const onDisconnect = () => {
-            setIsConnected(false);
-            setCurrentGesture(null);
-        };
-
-        const onGesture = (data) => {
-            if (data.error) {
-                // E.g., "No hand detected" or "Could not classify"
-                setCurrentGesture(null);
-            } else if (data.gesture) {
-                // Update the current predicted gesture (e.g., 'A')
-                setCurrentGesture(data.gesture);
-            }
-        };
-
-        const onError = (data) => {
-            setError(data.message);
-        };
-
-        // Attach event listeners
-        socket.on('connect', onConnect);
+        socket.on('connect',    onConnect);
         socket.on('disconnect', onDisconnect);
-        socket.on('gesture', onGesture);
-        socket.on('error', onError);
+        socket.on('gesture',    onGesture);
+        socket.on('error',      onError);
 
-        // Cleanup: remove listeners and disconnect when the component unmounts
         return () => {
-            socket.off('connect', onConnect);
+            socket.off('connect',    onConnect);
             socket.off('disconnect', onDisconnect);
-            socket.off('gesture', onGesture);
-            socket.off('error', onError);
+            socket.off('gesture',    onGesture);
+            socket.off('error',      onError);
             socket.disconnect();
         };
     }, []);
 
-    // Helper function to send video frames to the backend
-    const sendFrame = useCallback((base64Image) => {
-        if (isConnected) {
-            socket.emit('process_frame', base64Image);
+    /**
+     * Send a flat array of 63 landmark numbers to the backend.
+     * The backend normalises them and runs the Random Forest model.
+     */
+    const sendLandmarks = useCallback((landmarkArray) => {
+        if (isConnected && landmarkArray) {
+            socket.emit('send_landmarks', { landmarks: landmarkArray });
         }
     }, [isConnected]);
 
-    return { isConnected, currentGesture, error, sendFrame };
+    return { isConnected, currentGesture, error, sendLandmarks };
 };
