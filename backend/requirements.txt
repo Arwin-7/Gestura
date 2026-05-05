@@ -8,4 +8,3 @@ numpy
 datasets
 Pillow
 gunicorn
-eventlet
