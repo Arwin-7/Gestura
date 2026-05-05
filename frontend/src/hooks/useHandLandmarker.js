@@ -9,8 +9,6 @@ export const useHandLandmarker = () => {
 
         const init = async () => {
             try {
-                // Dynamic import prevents Rolldown/Rollup from trying to statically bundle
-                // the MediaPipe WASM files, which fails at build time on Vercel.
                 const { FilesetResolver, HandLandmarker } = await import(
                     /* @vite-ignore */
                     'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/vision_bundle.mjs'
@@ -44,10 +42,6 @@ export const useHandLandmarker = () => {
         return () => { cancelled = true; };
     }, []);
 
-    /**
-     * Detect landmarks from a <video> element.
-     * Returns a flat [63] float array or null.
-     */
     const detectLandmarks = useCallback((videoEl) => {
         if (!landmarkerRef.current || !isReady || !videoEl) return null;
         if (videoEl.readyState < 2) return null;
