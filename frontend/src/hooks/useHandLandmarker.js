@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 
 export const useHandLandmarker = () => {
     const landmarkerRef = useRef(null);
@@ -10,8 +9,15 @@ export const useHandLandmarker = () => {
 
         const init = async () => {
             try {
+                // Dynamic import prevents Rolldown/Rollup from trying to statically bundle
+                // the MediaPipe WASM files, which fails at build time on Vercel.
+                const { FilesetResolver, HandLandmarker } = await import(
+                    /* @vite-ignore */
+                    'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/vision_bundle.mjs'
+                );
+
                 const vision = await FilesetResolver.forVisionTasks(
-                    'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm'
+                    'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm'
                 );
 
                 const landmarker = await HandLandmarker.createFromOptions(vision, {
@@ -27,7 +33,7 @@ export const useHandLandmarker = () => {
                 if (!cancelled) {
                     landmarkerRef.current = landmarker;
                     setIsReady(true);
-                    console.log('MediaPipe HandLandmarker ready (browser)');
+                    console.log('MediaPipe HandLandmarker ready (via CDN)');
                 }
             } catch (err) {
                 console.error('Failed to init HandLandmarker:', err);
@@ -39,8 +45,8 @@ export const useHandLandmarker = () => {
     }, []);
 
     /**
-     * Detect landmarks in a video element.
-     * Returns a flat [63] array or null.
+     * Detect landmarks from a <video> element.
+     * Returns a flat [63] float array or null.
      */
     const detectLandmarks = useCallback((videoEl) => {
         if (!landmarkerRef.current || !isReady || !videoEl) return null;
@@ -50,7 +56,6 @@ export const useHandLandmarker = () => {
 
         if (!result.landmarks || result.landmarks.length === 0) return null;
 
-        // Flatten the 21 landmarks into 63 numbers [x,y,z, x,y,z, ...]
         const flat = [];
         for (const lm of result.landmarks[0]) {
             flat.push(lm.x, lm.y, lm.z);
